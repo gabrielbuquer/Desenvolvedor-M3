@@ -44,14 +44,21 @@ $(document).ready(function(){
             var estoque_filtrado = filtraProdutosPreco(estoque_filtrado, range_selecionados);
         }
 
-        if(estoque_filtrado.length > 0){
-            listaProdutos(estoque_filtrado);
+        var ordem = $('.body_content_custom_select_options').data('order')
+        if(ordem != 0){
+            var estoque_ordenado = ordenaProdutos(ordem, estoque_filtrado);
+        }else{
+            var estoque_ordenado = estoque_filtrado;
+        }
+
+        if(estoque_ordenado.length > 0){
+            listaProdutos(estoque_ordenado);
         }else{
             $('.body_products_box').empty();
             $('.body_products_box').append('<div class="body_products_box_no_content"><h3> Não há produtos com essas características :( </h3></div>');
             
         }
-        produtos_tela = estoque_filtrado;
+        produtos_tela = estoque_ordenado;
         if($(document).width() < 860){
             $('.body_sidebar_filters').removeClass('filter_mobile_active');
             $('body').css('overflow-y', '');
@@ -78,7 +85,9 @@ $(document).ready(function(){
     })
     $('.body_sidebar_content_order_option').on('click', function(){
         $('.body_content_header_order_products_mobile').removeClass('filter_mobile_active');
+        $('.body_content_custom_select>div.body_content_custom_select_box>span>p').text($(this).children().text())
         $('body').css('overflow-y', '');
+        $('.body_content_custom_select_options').data('order', $(this).find('span').data('order'))
         var produtos_ordenados = ordenaProdutos($(this).find('span').data('order'), produtos_tela);
         listaProdutos(produtos_ordenados);
 
@@ -106,6 +115,7 @@ $(document).ready(function(){
         $('.body_content_custom_select').removeClass('custom_select_open');
         $('.body_content_custom_select_options').slideToggle(200);
         // alert($(this).find('span').data('order'));
+        $('.body_content_custom_select_options').data('order', $(this).find('span').data('order'))
         var produtos_ordenados = ordenaProdutos($(this).find('span').data('order'), produtos_tela);
         listaProdutos(produtos_ordenados);
         
